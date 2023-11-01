@@ -1,0 +1,90 @@
+<!-- views/dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div>
+      <h1>Order Dashboard</h1>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Order Date</th>
+            <th>Order Email</th>
+            <!-- Add more table headers for other columns -->
+            <th>Order Name</th>
+
+            <th>Order Address</th>
+
+            <th>Order Products</th>
+
+            <th>Order Phone</th>
+
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(order => { %>
+          <tr>
+            <td style="border-right: 1px solid black"><%= order.OrderDate.toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) %></td>
+            <td style="border-right: 1px solid black;padding: 0;"><%= order.OrderEmail %></td>
+            <td style="border-right: 1px solid black"><%= order.FirstName %> <%= order.LastName %></td>
+            <td style="border-right: 1px solid black"><%= order.OrderCity %>, <%= order.OrderAddress %>, <%= order.OrderZIP %></td>
+            <td style="border-right: 1px solid black"><%= order.OrderProducts %></td>
+
+            <td style="border-right: 1px solid black"><%= order.OrderPhone %></td>
+
+
+
+
+
+            <td>
+              <form action="/updateStatus/<%= order.OrderID %>" method="POST">
+                <div class="form-group">
+                  <select class="form-control" name="status">
+                    <option value="New" <% if (order.OrderStatus === 'New') { %>selected<% } %>>New</option>
+
+                    <option value="Pending" <% if (order.OrderStatus === 'Pending') { %>selected<% } %>>Pending</option>
+                    <option value="Shipped" <% if (order.OrderStatus === 'Shipped') { %>selected<% } %>>Shipped</option>
+                    <option value="Delivered" <% if (order.OrderStatus === 'Delivered') { %>selected<% } %>>Delivered</option>
+
+                    <!-- Add other status options -->
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Change Status</button>
+              </form>
+              
+            </td>
+            <td>
+              <form action="/updateTracking/<%= order.OrderID %>" method="POST">
+                <div class="form-group">
+                  <input type="text" class="form-control" name="tracking" placeholder="Enter Tracking Number" value="<%= order.OrderTrackingNumber %>">
+                </div>
+                <button type="submit" class="btn btn-success">Update Tracking</button>
+              </form>
+            </td>
+            <!-- Display other order details -->
+            <td>
+              <form action="/sendEmail/<%= order.OrderID %>" method="POST">
+                <button type="submit" class="btn btn-info">Send Email</button>
+              </form>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <!-- Include Bootstrap JS and other scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
