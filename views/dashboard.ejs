@@ -18,6 +18,12 @@
       vertical-align: middle;
       min-width: 150px;
     }
+    .success {
+      color: #2edd1e
+    }
+    .error {
+      color: #f23535
+    }
   </style>
 
 </head>
@@ -51,7 +57,7 @@
           <td><%= order.OrderDate.toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) %></td>
           <td><%= order.OrderEmail %></td>
           <td>
-            <%= order.FirstName %> <%= order.LastName %>
+             <%= order.LastName %> <%= order.FirstName %>
           </td>
           <td>
             <%= order.OrderAddress %>, <%= order.OrderCity %>, <%= order.OrderZIP %>
@@ -76,9 +82,9 @@
             </form>
           </td>
           <td>
-            <form action="/sendEmail/<%= order.OrderID %>" method="post">
-              <button type="submit" class="btn btn-secondary btn-sm">Email</button>
-            </form>
+              <div class="message" style="font-size: 12px"></div>
+
+              <button id="email-btn" data-id="<%= order.OrderID %>" class="btn btn-secondary btn-sm">Email</button>
           </td>
         </tr>
         <% }); %>
@@ -87,12 +93,37 @@
     </table>
 
   </div>
-
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+const emailBtn = document.querySelectorAll('#email-btn');
+emailBtn.forEach((btn) => {
+  btn.addEventListener('click', () => {
 
+const orderId = btn.getAttribute("data-id");
+const messageEl = btn.previousElementSibling
+
+fetch(`/sendEmail/${orderId}`, {
+  method: 'POST' 
+})
+.then(response => {
+
+  if(response.ok) {
+    messageEl.textContent = 'Email sent!';
+    messageEl.style.color = "green"
+  } else {
+    messageEl.textContent = 'Error sending email';
+    messageEl.style.color = "red"
+  }
+
+});
+
+});
+})
+
+</script>
 </body>
 
 </html>
